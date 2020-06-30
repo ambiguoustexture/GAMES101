@@ -2,8 +2,10 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include <iostream>
+#include <math.h>
 
 int main(){
+    /*
     // Basic Example of cpp
     std::cout << "Example of cpp \n";
     float a = 1.0, b = 2.0;
@@ -42,7 +44,27 @@ int main(){
     // matrix scalar multiply i * 2.0
     // matrix multiply i * j
     // matrix multiply vector i * v
+    */
 
-    // Initial point P(2, 1)
+    Eigen::Matrix3f P;
+    P << 2, 0, 0,
+         1, 0, 0,
+         1, 0, 0;
+    std::cout << "Point P(2, 1) in homogeneous coordinates:" << std::endl;
+    std::cout << P << std::endl;
+
+    float cosOfTheta = sqrt(2) / 2, sinOfTheta = sqrt(2) / 2;
+    Eigen::Matrix3f R_45degrees;
+    R_45degrees << cosOfTheta, -sinOfTheta, 0,
+                   sinOfTheta,  cosOfTheta, 0,
+                   0,          0,           1;
+
+    Eigen::Matrix3f T_2comma1;
+    T_2comma1 << 1, 0, 2,
+                 0, 1, 1,
+                 0, 0, 1;
+    
+    std::cout << "Point P rotated by 45 degrees and translated by (2, 1):" << std::endl;
+    std::cout << T_2comma1 * R_45degrees * P << std::endl;
     return 0;
 }
