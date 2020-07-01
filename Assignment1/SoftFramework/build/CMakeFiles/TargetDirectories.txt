@@ -1,0 +1,3 @@
+/Users/here/Documents/WorkSpace/GAMES101/Assignment1/SoftFramework/build/CMakeFiles/rebuild_cache.dir
+/Users/here/Documents/WorkSpace/GAMES101/Assignment1/SoftFramework/build/CMakeFiles/edit_cache.dir
+/Users/here/Documents/WorkSpace/GAMES101/Assignment1/SoftFramework/build/CMakeFiles/Rasterizer.dir
