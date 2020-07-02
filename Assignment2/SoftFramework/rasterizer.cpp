@@ -149,7 +149,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
         {
             for (int y = box_b; y <= box_t; y++) 
             {
-                float z_interpolated_min = FLT_MAX;
+                float z_interpolated_max = FLT_MAX;
                 int cnt = 0;
                 for (int i = 0; i < 4; i++) 
                 {
@@ -163,17 +163,17 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
                             + beta  * v[1].z() / v[1].w() 
                             + gamma * v[2].z() / v[2].w();
                         z_interpolated *= w_reciprocal;
-                        z_interpolated_min = std::max(z_interpolated_min, z_interpolated);
+                        z_interpolated_max = std::max(z_interpolated_max, z_interpolated);
                         cnt++;
                     }
                     if (cnt != 0) 
                     {
-                        if (depth_buf[get_index(x, y)] > z_interpolated_min) 
+                        if (depth_buf[get_index(x, y)] > z_interpolated_max) 
                         {
                             Vector3f color = t.getColor();
                             Vector3f point(3);
-                            point << (float)x, (float)y, z_interpolated_min;
-                            depth_buf[get_index(x, y)] = z_interpolated_min;
+                            point << (float)x, (float)y, z_interpolated_max;
+                            depth_buf[get_index(x, y)] = z_interpolated_max;
                             set_pixel(point, color);
                         }
                     }
