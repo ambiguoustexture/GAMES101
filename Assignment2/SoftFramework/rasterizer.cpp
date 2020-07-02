@@ -140,7 +140,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
     {
         std::vector<Eigen::Vector2f> offset
         {
-            {0.25, 0.75},
+            {0.25, 0.25},
             {0.75, 0.25},
             {0.25, 0.75},
             {0.75, 0.75}
@@ -155,14 +155,15 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
                 {
                     if (insideTriangle((float)x + offset[i][0], (float)y + offset[i][1], t.v))
                     {
-                        auto [alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+                        auto [alpha, beta, gamma] = 
+                            computeBarycentric2D((float)x + offset[i][0], (float)y + offset[i][1], t.v);
                         float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
                         float z_interpolated =
                               alpha * v[0].z() / v[0].w() 
                             + beta  * v[1].z() / v[1].w() 
                             + gamma * v[2].z() / v[2].w();
                         z_interpolated *= w_reciprocal;
-                        z_interpolated_min = std::min(z_interpolated_min, z_interpolated);
+                        z_interpolated_min = std::max(z_interpolated_min, z_interpolated);
                         cnt++;
                     }
                     if (cnt != 0) 
