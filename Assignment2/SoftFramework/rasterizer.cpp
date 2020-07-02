@@ -120,7 +120,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
 {
     auto v = t.toVector4();
     
-    // TODO:: Find out the bounding box of current triangle.
+    // TODO: Find out the bounding box of current triangle.
     // iterate through the pixel and find if the current pixel is inside the triangle
     float box_t = (int)std::ceil (std::max(v[0][1], std::max(v[1][1], v[2][1]))),
           box_b = (int)std::floor(std::min(v[0][1], std::min(v[1][1], v[2][1]))),
@@ -135,74 +135,25 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t)
 
     // TODO : set the current pixel (use the set_pixel function) to the color 
     // of the triangle (use getColor function) if it should be painted.
-    bool MSAA = true;
-    if (MSAA) 
+    for (int x = box_l; x <= box_r; x++) 
     {
-        std::vector<Eigen::Vector2f> offset
-        {
-            {0.25, 0.25},
-            {0.75, 0.25},
-            {0.25, 0.75},
-            {0.75, 0.75}
-        };
-        for (int x = box_l; x <= box_r; x++) 
-        {
-            for (int y = box_b; y <= box_t; y++) 
-            {
-                float z_interpolated_max = FLT_MAX;
-                int cnt = 0;
-                for (int i = 0; i < 4; i++) 
-                {
-                    if (insideTriangle((float)x + offset[i][0], (float)y + offset[i][1], t.v))
-                    {
-                        auto [alpha, beta, gamma] = 
-                            computeBarycentric2D((float)x + offset[i][0], (float)y + offset[i][1], t.v);
-                        float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
-                        float z_interpolated =
-                              alpha * v[0].z() / v[0].w() 
-                            + beta  * v[1].z() / v[1].w() 
-                            + gamma * v[2].z() / v[2].w();
-                        z_interpolated *= w_reciprocal;
-                        z_interpolated_max = std::max(z_interpolated_max, z_interpolated);
-                        cnt++;
-                    }
-                    if (cnt != 0) 
-                    {
-                        if (depth_buf[get_index(x, y)] > z_interpolated_max) 
-                        {
-                            Vector3f color = t.getColor();
-                            Vector3f point(3);
-                            point << (float)x, (float)y, z_interpolated_max;
-                            depth_buf[get_index(x, y)] = z_interpolated_max;
-                            set_pixel(point, color);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        for (int x = box_l; x <= box_r; x++) 
-        {
-           for (int y = box_b; y <= box_t; y++) 
+       for (int y = box_b; y <= box_t; y++) 
+       {
+           if (insideTriangle((float)x + 0.5, (float)y + 0.5, t.v)) 
            {
-               if (insideTriangle((float)x + 0.5, (float)y + 0.5, t.v)) 
+               auto [alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
+               float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
+               float z_interpolated = 
+                   alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
+               z_interpolated *= w_reciprocal;
+               if (depth_buf[get_index(x, y)] > z_interpolated) 
                {
-                   auto [alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
-                   float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
-                   float z_interpolated = 
-                       alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();
-                   z_interpolated *= w_reciprocal;
-                   if (depth_buf[get_index(x, y)] > z_interpolated) 
-                   {
-                       Vector3f color = t.getColor();
-                       Vector3f point(3);
-                       point << (float)x, (float)y, z_interpolated;
-                       depth_buf[get_index(x, y)] = z_interpolated;
-                       set_pixel(point, color);
-                   }
-               }
+                   Vector3f color = t.getColor();
+                   Vector3f point(3);
+                   point << (float)x, (float)y, z_interpolated;
+                   depth_buf[get_index(x, y)] = z_interpolated;
+                   set_pixel(point, color);
+                }
            }
         }
     }
