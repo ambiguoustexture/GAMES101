@@ -112,7 +112,7 @@ int main(int argc, const char** argv)
     auto col_id = r.load_colors(cols);
 
     int key = 0;
-    int frame_count = 0;
+    // int frame_count = 0;
 
     if (command_line)
     {
@@ -148,7 +148,7 @@ int main(int argc, const char** argv)
         cv::imshow("image", image);
         key = cv::waitKey(10);
 
-        std::cout << "frame count: " << frame_count++ << '\n';
+        // std::cout << "frame count: " << frame_count++ << '\n';
     }
 
     return 0;
