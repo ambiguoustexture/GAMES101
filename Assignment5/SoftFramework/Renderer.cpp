@@ -199,14 +199,14 @@ Vector3f castRay(
             }
         }
     }
-
     return hitColor;
 }
 
 // [comment]
-// The main render function. This where we iterate over all pixels in the image, generate
-// primary rays and cast these rays into the scene. The content of the framebuffer is
-// saved to a file.
+// The main render function. 
+// This where we iterate over all pixels in the image, 
+// generate primary rays and cast these rays into the scene. 
+// The content of the framebuffer is saved to a file.
 // [/comment]
 void Renderer::Render(const Scene& scene)
 {
@@ -217,6 +217,7 @@ void Renderer::Render(const Scene& scene)
 
     // Use this variable as the eye position to start your rays.
     Vector3f eye_pos(0);
+    // m: index of ray
     int m = 0;
     for (int j = 0; j < scene.height; ++j)
     {
@@ -225,12 +226,17 @@ void Renderer::Render(const Scene& scene)
             // generate primary ray direction
             float x;
             float y;
-            // TODO: Find the x and y positions of the current pixel to get the direction
-            // vector that passes through it.
-            // Also, don't forget to multiply both of them with the variable *scale*, and
-            // x (horizontal) variable with the *imageAspectRatio*            
+            // DONE: Find the x and y positions of the current pixel 
+            // to get the direction vector that passes through it.
+            // Also, don't forget to multiply both of them with the variable *scale*, 
+            // and x (horizontal) variable with the *imageAspectRatio*
+            x = (float(i) / float(scene.width ) - 0.5f) * 2 * scale * imageAspectRatio;
+            // sub 1 for j < scene.height
+            y = (float(scene.height - 1 - j) / (float)scene.height - 0.5f) * 2 * scale;
+            // DONE
 
             Vector3f dir = Vector3f(x, y, -1); // Don't forget to normalize this direction!
+            dir = normalize(dir);
             framebuffer[m++] = castRay(eye_pos, dir, scene, 0);
         }
         UpdateProgress(j / (float)scene.height);
