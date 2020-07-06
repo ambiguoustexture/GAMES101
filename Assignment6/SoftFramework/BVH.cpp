@@ -31,7 +31,7 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
 
     // Compute bounds of all primitives in BVH node
     Bounds3 bounds;
-    for (int i = 0; i < objects.size(); ++i)
+    for (int i = 0; i < (int)objects.size(); ++i)
         bounds = Union(bounds, objects[i]->getBounds());
     if (objects.size() == 1) {
         // Create leaf _BVHBuildNode_
@@ -50,7 +50,7 @@ BVHBuildNode* BVHAccel::recursiveBuild(std::vector<Object*> objects)
     }
     else {
         Bounds3 centroidBounds;
-        for (int i = 0; i < objects.size(); ++i)
+        for (int i = 0; i < (int)objects.size(); ++i)
             centroidBounds =
                 Union(centroidBounds, objects[i]->getBounds().Centroid());
         int dim = centroidBounds.maxExtent();
@@ -104,6 +104,61 @@ Intersection BVHAccel::Intersect(const Ray& ray) const
 
 Intersection BVHAccel::getIntersection(BVHBuildNode* node, const Ray& ray) const
 {
-    // TODO Traverse the BVH to find intersection
+    // DONE Traverse the BVH to find intersection
 
+    auto dirIsNeg = std::array<int, 3> 
+    {
+        {
+            int(ray.direction.x > 0),
+            int(ray.direction.y > 0),
+            int(ray.direction.z > 0)
+        }
+    };
+
+    Intersection inter;
+    bool interNode = node -> bounds.IntersectP(ray, ray.direction_inv, dirIsNeg);
+    if (interNode)
+    {
+        // reached leaf node
+        if (node -> left == nullptr && node -> right == nullptr)
+        {
+            inter = node -> object -> getIntersection(ray);
+        }
+        else 
+        {
+            auto interLeft  = getIntersection(node -> left,  ray),
+                 interRight = getIntersection(node -> right, ray);
+            inter = interLeft.distance < interRight.distance ? interLeft : interRight;
+        }
+    }
+    return inter;
+    // DONE
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

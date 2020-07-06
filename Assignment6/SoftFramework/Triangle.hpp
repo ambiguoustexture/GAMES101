@@ -5,7 +5,6 @@
 #include "Material.hpp"
 #include "OBJ_Loader.hpp"
 #include "Object.hpp"
-#include "Triangle.hpp"
 #include <cassert>
 #include <array>
 
@@ -89,7 +88,7 @@ public:
         Vector3f max_vert = Vector3f{-std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity()};
-        for (int i = 0; i < mesh.Vertices.size(); i += 3) {
+        for (int i = 0; i < (int)mesh.Vertices.size(); i += 3) {
             std::array<Vector3f, 3> face_vertices;
             for (int j = 0; j < 3; j++) {
                 auto vert = Vector3f(mesh.Vertices[i + j].Position.X,
@@ -231,10 +230,14 @@ inline Intersection Triangle::getIntersection(Ray ray)
         return inter;
     t_tmp = dotProduct(e2, qvec) * det_inv;
 
-    // TODO find ray triangle intersection
-
-
-
+    // DONE: find ray triangle intersection
+    inter.happened = t_tmp > 0 && u > 0 && v > 0 && 1 - u - v > 0;
+    inter.coords   = ray(t_tmp);
+    inter.normal   = this -> normal;
+    inter.distance = t_tmp;
+    inter.obj      = this;
+    inter.m        = m;
+    // DONE
 
     return inter;
 }
