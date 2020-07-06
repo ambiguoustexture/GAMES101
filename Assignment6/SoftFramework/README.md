@@ -5,4 +5,5 @@ I've finished task ...
 - BVH 查找:正确实现 BVH 加速的光线与场景求交。
 
 Result: ./images/binary.ppm
-![PNG formated result](./images/binary\ copy.png)
+
+![PNG formated result](https://github.com/ambiguoustexture/GAMES101/blob/master/Assignment6/SoftFramework/images/binary%20copy.png)
