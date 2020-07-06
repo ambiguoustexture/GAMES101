@@ -5,5 +5,4 @@ I've finished task ...
 - BVH 查找:正确实现 BVH 加速的光线与场景求交。
 
 Result: ./images/binary.ppm
-
-![Result: ./images/binary.ppm](./images/binary.ppm)
+![PNG formated result](./images/binary\ copy.png)
